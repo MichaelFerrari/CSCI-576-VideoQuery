@@ -6,6 +6,7 @@ import glob
 import time
 import cv2
 import json
+import math
 import wave
 import sys
 import time
@@ -126,12 +127,19 @@ def compare_motion(query_array):
             db_array[index] = np.asarray(results)
     for i in range(7):
         for j in range(451):
-            frame_array[i][j] = np.sum(np.absolute(np.subtract(db_array[i][j:j + 149], query_array)))
-            # frame_array[i][j] = 1 / (1 + np.sum(np.absolute(np.subtract(db_array[i][j:j + 149], query_array))))
-        motion_result[database[i]] = (np.amin(frame_array[i]), frame_array[i].tolist())
+            # frame_array[i][j] = np.sum(np.absolute(np.subtract(db_array[i][j:j + 149], query_array)))
+            frame_array[i][j] = diff_to_coefficient(
+                np.sum(np.absolute(np.subtract(db_array[i][j:j + 149], query_array))))
+        motion_result[database[i]] = (np.amax(frame_array[i]), frame_array[i].tolist())
         # motion_result[database[i]] = (frame_array[i], np.amax(frame_array[i]))
     print(motion_result)
     return motion_result
+
+
+def diff_to_coefficient(sample):
+    if sample > 10:
+        return 0.95 / math.log10(sample)
+    return 1 - 0.005 * sample
 
 
 def compare_audio(wave_path):
@@ -262,18 +270,48 @@ def test():
     test_query_file_path = "/Users/skywish/Downloads/Class/576/query"
     test_query_file_name = "second"
     npy_file_name = "traffic.npy"
+    wave_path = '/Users/skywish/Downloads/Class/576/query/first/first.wav'
     query = ["first", "second"]
     n1 = np.load('data/flowers.npy')
-    n2 = np.load('data/second.npy')
-    di = dict()
-    di['traffic'] = (0.999, [0.234, 0.456])
-    data_to_json(di)
-    with open("data/Q3.txt", "r") as f:
+    n2 = np.load('data/first.npy')
+    result = dict()
+    data = dict()
+    # get motion
+    t = time.time()
+    with open("data/queryfirst.txt", "r") as f:
         array = f.read().split(",")
         results = list(map(float, array))
         query = np.asarray(results)
-    d1 = compare_motion(query)
-    data_to_json(d1)
+    motion = compare_motion(query)
+    # get color
+    color = compare_color(n2)
+    # get audio
+    audio = compare_audio(wave_path)
+    print("It costs %f seconds to process." % (time.time() - t))
+    motion_coefficients = 0.55
+    color_coefficients = 0.35
+    audio_coefficients = 0.1
+    database = ['musicvideo', 'traffic', 'flowers', 'interview', 'movie', 'sports', 'starcraft']
+    t = time.time()
+    for db in database:
+        (motion_best, motion_array) = motion[db]
+        (color_best, color_array) = color[db]
+        (audio_best, audio_array) = audio[db]
+        item = dict()
+        array = []
+        item['motion'] = round(motion_best, 2)
+        item['color'] = round(color_best, 2)
+        item['audio'] = round(audio_best, 2)
+        for i in range(451):
+            frame_value = motion_coefficients * motion_array[i] + color_coefficients * color_array[i] + \
+                          audio_coefficients * audio_array[int(i / 3)]
+            array.append(round(frame_value, 2))
+        item['array'] = array
+        item['matchPerc'] = max(array)
+        data[db] = item
+    result['data'] = data
+    data_to_json(result)
+    print("It costs %f seconds to process." % (time.time() - t))
 
 
 def main():
@@ -281,6 +319,9 @@ def main():
     test_query_file_name = "second"
     wave_path = '/Users/skywish/Downloads/Class/576/query/first/first.wav'
     di = dict()
+    motion_coefficients = 0.5
+    color_coefficients = 0.3
+    audio_coefficients = 0.2
     t = time.time()
     data_list, query_array = read_img_color_and_motion(test_query_file_path, test_query_file_name, 2)
     print("It costs", time.time() - t, "seconds to pre process color and motion")
@@ -299,4 +340,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    test()
