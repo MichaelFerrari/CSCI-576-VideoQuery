@@ -105,9 +105,12 @@ def read_img_color_and_motion(folder_path, folder_name, way):
     # np.save(folder_name + ".npy", data_list)
 
 
-def generate_video(folder_path, folder_name):
-    file_path = folder_path + "/" + folder_name + "/" + folder_name + ".wav"
-    os.system('ffmpeg -framerate 30 -i pic/img%03d.png -i ' + file_path + 'query.mp4')
+# def generate_video(folder_path, folder_name):
+#     file_path = folder_path + "/" + folder_name + "/" + folder_name + ".wav"
+#     os.system('ffmpeg -framerate 30 -i pic/img%03d.png -i ' + file_path + 'query.mp4')
+
+def generate_video(wave_path, video_name):
+    os.system('ffmpeg -framerate 30 -i pic/img%03d.png -i ' + wave_path + ' ' + video_name + '.mp4')
 
 
 def compare_color(query_list):
@@ -374,8 +377,20 @@ def main():
         (motion_best, motion_array) = motion[db]
         (color_best, color_array) = color[db]
         (audio_best, audio_array) = audio[db]
+        if motion_best < 0.475:
+            motion_coefficients = 0.2
+            color_coefficients = 0.6
+            audio_coefficients = 0.2
+        elif motion_best < 0.65:
+            motion_coefficients = 0.4
+            color_coefficients = 0.5
+            audio_coefficients = 0.1
+
         item = dict()
         array = []
+        item['motion_coefficient'] = motion_coefficients
+        item['color_coefficient'] = color_coefficients
+        item['audio_coefficient'] = audio_coefficients
         item['motion'] = round(motion_best, 2)
         item['color'] = round(color_best, 2)
         item['audio'] = round(audio_best, 2)
@@ -383,11 +398,14 @@ def main():
             frame_value = motion_coefficients * motion_array[i] + color_coefficients * color_array[i] + \
                           audio_coefficients * audio_array[int(i / 3)]
             array.append(round(frame_value, 2))
+        for i in range(450, 601):
+            array.append(0)
         item['array'] = array
         item['matchPerc'] = max(array)
         data[db] = item
     result['data'] = data
     data_to_json(result, test_query_file_name)
+    generate_video('%s/%s/%s.wav' % (test_query_file_path, test_query_file_name, test_query_file_name), test_query_file_name)
     print("It costs %f seconds to search videos totally." % (time.time() - start))
 
 
