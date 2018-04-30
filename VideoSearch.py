@@ -82,14 +82,14 @@ def read_img_color_and_motion(folder_path, folder_name, way):
     query_array = np.zeros(loop_time - 2)
 
     # handle first img
-    img, comb = read_img_color(folder_path + "/" + folder_name + "/" + folder_name + "001.rgb")
+    img, comb = read_img_color(folder_path + "/" + folder_name + "/" + folder_name + "_001.rgb")
     data_list.append(comb)
     img = np.asarray(img)
     old_image = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
     # handle rest
     for index in range(2, loop_time):
-        filename = folder_path + "/" + folder_name + "/" + folder_name + '{0:03}'.format(index) + ".rgb"
+        filename = folder_path + "/" + folder_name + "/" + folder_name + '_' + '{0:03}'.format(index) + ".rgb"
         img, comb = read_img_color(filename)
         data_list.append(comb)
         img = np.asarray(img)
@@ -132,7 +132,7 @@ def compare_motion(query_array):
     frame_array = np.zeros((7, 451))
     motion_result = {}
     for index in range(len(database)):
-        file_path = '/Users/skywish/Projects/Python/CSCI-576-VideoQuery/data/' + database[index] + 'motion.txt'
+        file_path = 'data/' + database[index] + 'motion.txt'
         with open(file_path, "r") as f:
             array = f.read().split(",")
             results = list(map(float, array))
@@ -154,7 +154,8 @@ def diff_to_coefficient(sample):
     return 1 - 0.005 * sample
 
 
-def compare_audio(wave_path):
+def compare_audio(folder_path, folder_name):
+    wave_path = folder_path + '/' + folder_name + '/' + folder_name + '.wav'
     database = ['musicvideo', 'traffic', 'flowers', 'interview', 'movie', 'sports', 'starcraft']
 
     sample_rate, samples = wavfile.read(wave_path)
@@ -344,9 +345,12 @@ def test1():
 
 def main():
     # /Users/skywish/Downloads/Class/576/new queries/Not From Searching Content/HQ1/HQ1_001.rgb
-    test_query_file_path = "/Users/skywish/Downloads/Class/576/query"
-    test_query_file_name = "second"
-    wave_path = '/Users/skywish/Downloads/Class/576/query/first/first.wav'
+    # test_query_file_path = "/Users/skywish/Downloads/Class/576/query"
+    # test_query_file_name = "first"
+    # wave_path = '/Users/skywish/Downloads/Class/576/query/first/first.wav'
+    # /Users/skywish/Downloads/Class/576/new queries/Not From Searching Content/HQ1/HQ1_001.rgb
+    test_query_file_path = sys.argv[0]
+    test_query_file_name = sys.argv[1]
     start = time.time()
     data_list, query_array = read_img_color_and_motion(test_query_file_path, test_query_file_name, 2)
     print("It costs", time.time() - start, "seconds to pre process color and motion")
@@ -357,7 +361,7 @@ def main():
     color = compare_color(data_list)
     print("It costs", time.time() - t, "seconds to analyze color")
     t = time.time()
-    audio = compare_audio(wave_path)
+    audio = compare_audio(test_query_file_path, test_query_file_name)
     print("It costs", time.time() - t, "seconds to analyze audio")
     result = dict()
     data = dict()
@@ -387,4 +391,4 @@ def main():
 
 
 if __name__ == "__main__":
-    test1()
+    main()
