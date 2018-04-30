@@ -122,7 +122,7 @@ def compare_color(query_list):
                 temp += calculate_similarity(2, query_list[j], db_npy[i + j])
             result.append(temp / 150)
         color_result[db] = (max(result), result)
-    print(color_result)
+    # print(color_result)
     return color_result
 
 
@@ -144,7 +144,7 @@ def compare_motion(query_array):
                 np.sum(np.absolute(np.subtract(db_array[i][j:j + 149], query_array))))
         motion_result[database[i]] = (np.amax(frame_array[i]), frame_array[i].tolist())
         # motion_result[database[i]] = (frame_array[i], np.amax(frame_array[i]))
-    print(motion_result)
+    # print(motion_result)
     return motion_result
 
 
@@ -188,7 +188,7 @@ def compare_audio(folder_path, folder_name):
             if difference > max_value:
                 max_value = difference
         audio_values[video] = (max_value, video_similarity)
-    print(audio_values)
+    # print(audio_values)
     return audio_values
 
 
@@ -268,9 +268,10 @@ def test_get_result(index):
     print(n[index])
 
 
-def data_to_json(data):
+def data_to_json(data, fileName):
     # Write JSON file
-    with open('data/result.json', 'w', encoding='utf8') as outfile:
+    with open('data/' + fileName + '.json', 'w', encoding='utf8') as outfile:
+    # with open('data/result.json', 'w', encoding='utf8') as outfile:
         str_ = json.dumps(data,
                           indent=4, sort_keys=True,
                           separators=(',', ': '), ensure_ascii=False)
@@ -349,8 +350,8 @@ def main():
     # test_query_file_name = "first"
     # wave_path = '/Users/skywish/Downloads/Class/576/query/first/first.wav'
     # /Users/skywish/Downloads/Class/576/new queries/Not From Searching Content/HQ1/HQ1_001.rgb
-    test_query_file_path = sys.argv[0]
-    test_query_file_name = sys.argv[1]
+    test_query_file_path = sys.argv[1]
+    test_query_file_name = sys.argv[2]
     start = time.time()
     data_list, query_array = read_img_color_and_motion(test_query_file_path, test_query_file_name, 2)
     print("It costs", time.time() - start, "seconds to pre process color and motion")
@@ -386,7 +387,7 @@ def main():
         item['matchPerc'] = max(array)
         data[db] = item
     result['data'] = data
-    data_to_json(result)
+    data_to_json(result, test_query_file_name)
     print("It costs %f seconds to search videos totally." % (time.time() - start))
 
 
