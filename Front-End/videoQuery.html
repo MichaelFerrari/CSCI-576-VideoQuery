@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang = "en">
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+        <script src="https://code.highcharts.com/highcharts.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/2.2.2/js/bootstrap.min.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script>
+        <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.0/css/bootstrap-toggle.min.css" rel="stylesheet">
+        <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.0/js/bootstrap-toggle.min.js"></script>
+        <script src="event.js"></script>
+        <style>
+            #searchBox {
+                margin-top:5%;
+                margin-left:10%;
+                margin-right:10%;
+                height: 150px;
+                font-family: "Times New Roman", Times, serif;
+            }
+            #topParts {
+                height:150px
+            }
+            #title {
+                font-size: 30px;
+            }
+            #searchInput {
+                width: 380px;
+                height: 30px;
+                text-align:left;
+            }
+            #box {
+                margin-top : 10px;
+                display: flex; justify-content: space-around
+            }
+            #statsTable {
+                margin-top: 10px;
+                margin-left:10%;
+                margin-right:10%;
+                font-family: "Times New Roman", Times, serif;
+            }
+            #content {
+                margin-top : 10px;
+                display: flex;
+                margin-left:10%;
+                margin-right:10%;
+                font-family: "Times New Roman", Times, serif;
+            }
+            #rightSection {
+                margin-left: 8px;
+            }
+            #leftSection {
+                margin-right: 8px;
+            }
+            #thisform {
+                padding: 0px;
+            }
+            #chart {
+                display: flex;
+                height:120px
+            }
+            #numTableBut {
+                height: 20px;
+            }
+            table {
+                font-family: arial, sans-serif;
+                border-collapse: collapse;
+                width: 100%;
+            }
+            td, th {
+                text-align: left;
+                padding: 8px;
+            }
+            tr:nth-child(even) {
+                background-color: #dddddd;
+            }
+            h2 {
+                text-align: center;
+            }
+        </style>
+    </head>
+    
+    <body background="background.jpg">
+        <div id = "mainBox">
+            
+            <!–– top search box ––>
+            <div id = "searchBox" class="container well" style ="background-color:white">
+                <div id = "title" style ="text-align : center"> Video Search</div>
+                <div id = "box">
+                    <div id="topSectionSymbol">
+                        <span><b>Enter Query Video Name</b>:</span>
+                    </div>
+                    <div>
+                        <form id="searchOutput">
+                            <input type="text" id = "searchInput">
+                        </form>
+                    </div>
+                    <div>
+                        <button class="btn btn-primary" id="searchbutton"><i class="glyphicon glyphicon-search" aria-hidden="true"></i>Search  </button>
+                        <button id = "clears"class="btn btn-default" onClick="window.location.reload()"><i class="glyphicon glyphicon-refresh"> </i>Clear</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!–– video player div ––>
+            <div id= "content" style="display:none">
+                <div id = "leftSection" style ="width:46%">
+                    <!––select which is best video ––>
+                    <div id="topParts" class = "well contianer" style ="background-color:white">
+                        <div class="form-group" id = "thisform">
+                            <label style = "text-align:center">Matched Video</label>
+                            <select class="form-control" id="selectResult">
+                                <option>traffic(92%)</option>
+                                <option>starcraft(80%)</option>
+                                <option>musicVideo(70%)</option>
+                                <option>movie(60%)</option>
+                                <option>interview(50%)</option>
+                                <option>flowers(55%)</option>
+                                <option>sports(12%)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div id="botParts" class = "well contianer" style ="background-color:white;text-align:center;">
+                        <span style = "font-size: 20px;">Query Video</span>
+                        <video width="500" controls>
+                            <source src="query.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                </div>
+                <div id = "rightSection" style ="width:55%">
+                    <div id="topSec" class = "well contianer" style ="background-color:white; width:100%; padding:2px; height:22%">
+                        <div id = "chart" style = "margin-top: 10px;">
+                            <div id="container"> </div>
+                            <button class="btn btn-primary btn-xs" id="numTableBut"><i class="glyphicon glyphicon-menu-right" aria-hidden="true"></i></button>
+                        </div>
+                    </div>
+                    <div id="botSection" class = "well contianer" style ="background-color:white;text-align:center">
+                        <span style = "font-size: 20px;">Database Matched Video</span>
+                        <video width="500" controls>
+                            <source src="traffic.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                </div>
+            </div>
+            
+            <!–– statistic div show motion,color,sound match ––>
+            <div id= "statsTable" class = "well contianer" style="display:none">
+                 <button class="btn btn-primary btn-xs" id="gobackbut"><i class="glyphicon glyphicon-menu-left" aria-hidden="true"></i></button>
+                <h2>Matched Video Statistic</h2>
+                <table id="myTable">
+                    <tr>
+                        <th>Video Type</th>
+                        <th>Motion Change(40%)</th>
+                        <th>Color Change(25%)</th>
+                        <th>Sound Change(25%)</th>
+                        <th>Object Detection(10%)</th>
+                        <th>Total Percentage</th>
+                    </tr>
+                    <tr>
+                        <td>Traffic</td>
+                        <td>98%</td>
+                        <td>28%</td>
+                        <td>99%</td>
+                        <td>44%</td>
+                        <td>78%</td>
+                    </tr>
+                    <tr>
+                        <td>Starcraft</td>
+                        <td>44%</td>
+                        <td>78%</td>
+                        <td>76%</td>
+                        <td>38%</td>
+                        <td>28%</td>
+                    </tr>
+                    <tr>
+                        <td>MusicVideo</td>
+                        <td>56%</td>
+                        <td>28%</td>
+                        <td>28%</td>
+                        <td>98%</td>
+                        <td>44%</td>
+                    </tr>
+                    <tr>
+                        <td>Movie</td>
+                        <td>51%</td>
+                        <td>42%</td>
+                        <td>33%</td>
+                        <td>69%</td>
+                        <td>82%</td>
+                    </tr>
+                    <tr>
+                        <td>Interview</td>
+                        <td>28%</td>
+                        <td>77%</td>
+                        <td>48%</td>
+                        <td>76%</td>
+                        <td>56%</td>
+                    </tr>
+                    <tr>
+                        <td>Flowers</td>
+                        <td>89%</td>
+                        <td>77%</td>
+                        <td>49%</td>
+                        <td>27%</td>
+                        <td>57%</td>
+                    </tr>
+                    <tr>
+                        <td>Sports</td>
+                        <td>29%</td>
+                        <td>37%</td>
+                        <td>28%</td>
+                        <td>98%</td>
+                        <td>87%</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </body>
+</html>
