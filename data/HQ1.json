@@ -1,5 +1,7 @@
 {
     "data": {
+        "audio_coefficient": 0.2,
+        "color_coefficient": 0.6,
         "flowers": {
             "array": [
                 0.37,
@@ -606,12 +608,9 @@
                 0
             ],
             "audio": 0.16,
-            "audio_coefficient": 0.2,
             "color": 0.58,
-            "color_coefficient": 0.6,
             "matchPerc": 0.43,
-            "motion": 0.31,
-            "motion_coefficient": 0.2
+            "motion": 0.31
         },
         "interview": {
             "array": [
@@ -1219,13 +1218,11 @@
                 0
             ],
             "audio": 0.17,
-            "audio_coefficient": 0.2,
             "color": 0.91,
-            "color_coefficient": 0.6,
             "matchPerc": 0.63,
-            "motion": 0.34,
-            "motion_coefficient": 0.2
+            "motion": 0.34
         },
+        "motion_coefficient": 0.2,
         "movie": {
             "array": [
                 0.66,
@@ -1832,12 +1829,9 @@
                 0
             ],
             "audio": 0.2,
-            "audio_coefficient": 0.2,
             "color": 1.0,
-            "color_coefficient": 0.6,
             "matchPerc": 0.69,
-            "motion": 0.34,
-            "motion_coefficient": 0.2
+            "motion": 0.34
         },
         "musicvideo": {
             "array": [
@@ -2445,12 +2439,9 @@
                 0
             ],
             "audio": 0.22,
-            "audio_coefficient": 0.2,
             "color": 0.94,
-            "color_coefficient": 0.6,
             "matchPerc": 0.66,
-            "motion": 0.35,
-            "motion_coefficient": 0.2
+            "motion": 0.35
         },
         "sports": {
             "array": [
@@ -3058,12 +3049,9 @@
                 0
             ],
             "audio": 0.21,
-            "audio_coefficient": 0.2,
             "color": 0.81,
-            "color_coefficient": 0.6,
             "matchPerc": 0.56,
-            "motion": 0.31,
-            "motion_coefficient": 0.2
+            "motion": 0.31
         },
         "starcraft": {
             "array": [
@@ -3671,12 +3659,9 @@
                 0
             ],
             "audio": 0.16,
-            "audio_coefficient": 0.2,
             "color": 0.99,
-            "color_coefficient": 0.6,
             "matchPerc": 0.68,
-            "motion": 0.36,
-            "motion_coefficient": 0.2
+            "motion": 0.36
         },
         "traffic": {
             "array": [
@@ -4284,12 +4269,9 @@
                 0
             ],
             "audio": 0.18,
-            "audio_coefficient": 0.2,
             "color": 0.57,
-            "color_coefficient": 0.6,
             "matchPerc": 0.44,
-            "motion": 0.37,
-            "motion_coefficient": 0.2
+            "motion": 0.37
         }
     }
 }

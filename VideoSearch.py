@@ -369,28 +369,32 @@ def main():
     print("It costs", time.time() - t, "seconds to analyze audio")
     result = dict()
     data = dict()
+    max_motion_best = 0
     motion_coefficients = 0.55
     color_coefficients = 0.35
     audio_coefficients = 0.1
     database = ['musicvideo', 'traffic', 'flowers', 'interview', 'movie', 'sports', 'starcraft']
     for db in database:
+        (motion_best, _) = motion[db]
+        if max_motion_best < motion_best:
+            max_motion_best = motion_best
+    if max_motion_best < 0.475:
+        motion_coefficients = 0.2
+        color_coefficients = 0.6
+        audio_coefficients = 0.2
+    elif max_motion_best < 0.65:
+        motion_coefficients = 0.4
+        color_coefficients = 0.5
+        audio_coefficients = 0.1
+    data['motion_coefficient'] = motion_coefficients
+    data['color_coefficient'] = color_coefficients
+    data['audio_coefficient'] = audio_coefficients
+    for db in database:
         (motion_best, motion_array) = motion[db]
         (color_best, color_array) = color[db]
         (audio_best, audio_array) = audio[db]
-        if motion_best < 0.475:
-            motion_coefficients = 0.2
-            color_coefficients = 0.6
-            audio_coefficients = 0.2
-        elif motion_best < 0.65:
-            motion_coefficients = 0.4
-            color_coefficients = 0.5
-            audio_coefficients = 0.1
-
         item = dict()
         array = []
-        item['motion_coefficient'] = motion_coefficients
-        item['color_coefficient'] = color_coefficients
-        item['audio_coefficient'] = audio_coefficients
         item['motion'] = round(motion_best, 2)
         item['color'] = round(color_best, 2)
         item['audio'] = round(audio_best, 2)
