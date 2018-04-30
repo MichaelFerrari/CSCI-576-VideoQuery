@@ -16,8 +16,12 @@ from scipy.io import wavfile
 from scipy.stats import pearsonr
 from scipy.spatial.distance import cosine, euclidean, cityblock
 
+count = 0
+
 
 def read_img_color(file):
+    global count
+    count += 1
     width = 352
     height = 288
     with open(file, "rb") as imageFile:
@@ -34,6 +38,9 @@ def read_img_color(file):
             ind += 1
             comb[int(r / 64), int(g / 64), int(b / 64)] += 1
             img.putpixel((x, y), (r, g, b))
+
+    name = "pic/img" + str(count).zfill(3) + ".png"
+    img.save(name, "PNG")
     return img, comb.flatten()
 
 
@@ -96,6 +103,11 @@ def read_img_color_and_motion(folder_path, folder_name, way):
     # result += str(query_array[148])
     return data_list, query_array
     # np.save(folder_name + ".npy", data_list)
+
+
+def generate_video(folder_path, folder_name):
+    file_path = folder_path + "/" + folder_name + "/" + folder_name + ".wav"
+    os.system('ffmpeg -framerate 30 -i pic/img%03d.png -i ' + file_path + 'query.mp4')
 
 
 def compare_color(query_list):
@@ -257,7 +269,7 @@ def test_get_result(index):
 
 def data_to_json(data):
     # Write JSON file
-    with open('data/data.json', 'w', encoding='utf8') as outfile:
+    with open('data/result.json', 'w', encoding='utf8') as outfile:
         str_ = json.dumps(data,
                           indent=4, sort_keys=True,
                           separators=(',', ': '), ensure_ascii=False)
@@ -314,30 +326,65 @@ def test():
     print("It costs %f seconds to process." % (time.time() - t))
 
 
+def test1():
+    test_query_file_path = "/Users/skywish/Downloads/Class/576/query"
+    test_query_file_name = "second"
+    # start = time.time()
+    # data_list, query_array = read_img_color_and_motion(test_query_file_path, test_query_file_name, 2)
+    # print("It costs", time.time() - start, "seconds to pre process color and motion")
+    t = time.time()
+    # compare_color(np.load('data/second.npy'))
+    with open("data/querysecond.txt", "r") as f:
+        array = f.read().split(",")
+        results = list(map(float, array))
+        query = np.asarray(results)
+    compare_motion(query)
+    print("It costs", time.time() - t, "seconds to analyze motion")
+
+
 def main():
+    # /Users/skywish/Downloads/Class/576/new queries/Not From Searching Content/HQ1/HQ1_001.rgb
     test_query_file_path = "/Users/skywish/Downloads/Class/576/query"
     test_query_file_name = "second"
     wave_path = '/Users/skywish/Downloads/Class/576/query/first/first.wav'
-    di = dict()
-    motion_coefficients = 0.5
-    color_coefficients = 0.3
-    audio_coefficients = 0.2
-    t = time.time()
+    start = time.time()
     data_list, query_array = read_img_color_and_motion(test_query_file_path, test_query_file_name, 2)
-    print("It costs", time.time() - t, "seconds to pre process color and motion")
+    print("It costs", time.time() - start, "seconds to pre process color and motion")
     t = time.time()
-    di['motion'] = compare_motion(query_array)
+    motion = compare_motion(query_array)
     print("It costs", time.time() - t, "seconds to analyze motion")
     t = time.time()
-    di['color'] = compare_color(data_list)
+    color = compare_color(data_list)
     print("It costs", time.time() - t, "seconds to analyze color")
     t = time.time()
-    di['audio'] = compare_audio(wave_path)
+    audio = compare_audio(wave_path)
     print("It costs", time.time() - t, "seconds to analyze audio")
-    t = time.time()
-    data_to_json(di)
-    print("It costs", time.time() - t, "seconds to save to json file")
+    result = dict()
+    data = dict()
+    motion_coefficients = 0.55
+    color_coefficients = 0.35
+    audio_coefficients = 0.1
+    database = ['musicvideo', 'traffic', 'flowers', 'interview', 'movie', 'sports', 'starcraft']
+    for db in database:
+        (motion_best, motion_array) = motion[db]
+        (color_best, color_array) = color[db]
+        (audio_best, audio_array) = audio[db]
+        item = dict()
+        array = []
+        item['motion'] = round(motion_best, 2)
+        item['color'] = round(color_best, 2)
+        item['audio'] = round(audio_best, 2)
+        for i in range(451):
+            frame_value = motion_coefficients * motion_array[i] + color_coefficients * color_array[i] + \
+                          audio_coefficients * audio_array[int(i / 3)]
+            array.append(round(frame_value, 2))
+        item['array'] = array
+        item['matchPerc'] = max(array)
+        data[db] = item
+    result['data'] = data
+    data_to_json(result)
+    print("It costs %f seconds to search videos totally." % (time.time() - start))
 
 
 if __name__ == "__main__":
-    test()
+    test1()
