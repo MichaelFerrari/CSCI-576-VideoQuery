@@ -252,6 +252,9 @@ $(document).ready(function(){
 });
 function drawGraph(data, array){
     chart = Highcharts.chart('container', {
+            chart: {
+                 zoomType: 'x'
+                 },
             title: {
                 text: ''
             },
