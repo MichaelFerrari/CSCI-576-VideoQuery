@@ -185,6 +185,9 @@ $(document).ready(function(){
         // tableContent += "<tr><td>interview</td><td>" + (intMotion * 100).toFixed(0) +"%</td><td>"+ (intColor*100).toFixed(0) + "%</td><td>"+ (intAudio*100).toFixed(0)  + "%</td><td>"+ (intPerc*100).toFixed(0) + "%</td></tr>"
         // tableContent += "<tr><td>Flowers</td><td>" + (floMotion * 100).toFixed(0) +"%</td><td>"+ (floColor*100).toFixed(0) + "%</td><td>"+ (floAudio*100).toFixed(0)  + "%</td><td>"+ (floPerc*100).toFixed(0) + "%</td></tr>"
         // tableContent += "<tr><td>Sports</td><td>" + (spoMotion * 100).toFixed(0) +"%</td><td>"+ (spoColor*100).toFixed(0) + "%</td><td>"+ (spoAudio*100).toFixed(0) + "%</td><td>"+ (spoPerc*100).toFixed(0) + "%</td></tr></tbody>"
+        if ($.fn.DataTable.isDataTable("#myTable")) {
+          $("#myTable").DataTable().destroy();
+        }
         $("#myTable").dataTable( {
           "columns": [
             { "title": "Video Type"},
