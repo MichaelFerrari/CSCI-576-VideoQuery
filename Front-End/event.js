@@ -52,7 +52,6 @@ $(document).ready(function(){
             count++;
         }
     }
-
     $("#searchbutton").click(function(){
         // sort match rate, and put top match in datbase video section
         var input = $("#searchInput").val();
@@ -144,7 +143,7 @@ $(document).ready(function(){
                     drawGraph(musArray,timeArray);
                 }
             } else if(finalArray[i] === 'movie') {
-                selectString += "<option value=\"mov\">movie(" + (movPerc * 100).toFixed(0)+"%)</option>" 
+                selectString += "<option value=\"mov\">movie(" + (movPerc * 100).toFixed(0)+"%)</option>"
                 if(i == 0){
                     $('#botSection video source').attr('src', "movie.mp4");
                     $("#botSection video")[0].load();
@@ -176,16 +175,35 @@ $(document).ready(function(){
         }
         $('#botParts video source').attr('src', input+".mp4");
         $("#botParts video")[0].load();
+
         // add table statistic to table content
-        var tableContent = "<tr><th>Video Type</th><th>Motion Change(" + (motionPerc * 100).toFixed(0) + "%)</th><th>Color Change(" + (colorPerc * 100).toFixed(0) + "%)</th><th>Sound Change(" + (audioPerc * 100).toFixed(0) + "%)</th><th>Total Percentage</th></tr>"
-        tableContent += "<tr><td>Traffic</td><td>" + (traMotion * 100).toFixed(0) +"%</td><td>"+ (traColor*100).toFixed(0) + "%</td><td>"+ (traAudio*100).toFixed(0) + "%</td><td>"+ (traPerc*100).toFixed(0) + "%</td></tr>"
-        tableContent += "<tr><td>Starcraft</td><td>" + (starMotion * 100).toFixed(0) +"%</td><td>"+ (starColor*100).toFixed(0) + "%</td><td>"+ (starAudio*100).toFixed(0)  + "%</td><td>"+ (starPerc*100).toFixed(0) + "%</td></tr>"
-        tableContent += "<tr><td>MusicVideo</td><td>" + (musMotion * 100).toFixed(0) +"%</td><td>"+ (musColor*100).toFixed(0) + "%</td><td>"+ (musAudio*100).toFixed(0) + "%</td><td>"+ (musPerc*100).toFixed(0) + "%</td></tr>"
-        tableContent += "<tr><td>Movie</td><td>" + (movMotion * 100).toFixed(0) +"%</td><td>"+ (movColor*100).toFixed(0) + "%</td><td>"+ (movAudio*100).toFixed(0) + "%</td><td>"+ (movPerc*100).toFixed(0) + "%</td></tr>"
-        tableContent += "<tr><td>interview</td><td>" + (intMotion * 100).toFixed(0) +"%</td><td>"+ (intColor*100).toFixed(0) + "%</td><td>"+ (intAudio*100).toFixed(0)  + "%</td><td>"+ (intPerc*100).toFixed(0) + "%</td></tr>"
-        tableContent += "<tr><td>Flowers</td><td>" + (floMotion * 100).toFixed(0) +"%</td><td>"+ (floColor*100).toFixed(0) + "%</td><td>"+ (floAudio*100).toFixed(0)  + "%</td><td>"+ (floPerc*100).toFixed(0) + "%</td></tr>"
-        tableContent += "<tr><td>Sports</td><td>" + (spoMotion * 100).toFixed(0) +"%</td><td>"+ (spoColor*100).toFixed(0) + "%</td><td>"+ (spoAudio*100).toFixed(0) + "%</td><td>"+ (spoPerc*100).toFixed(0) + "%</td></tr>"
-         $('table').html(tableContent);
+        // var tableContent = "<thead><tr><th>Video Type</th><th>Motion Change(" + (motionPerc * 100).toFixed(0) + "%)</th><th>Color Change(" + (colorPerc * 100).toFixed(0) + "%)</th><th>Sound Change(" + (audioPerc * 100).toFixed(0) + "%)</th><th>Total Percentage</th></tr></thead>"
+        // tableContent += "<tbody><tr><td>Traffic</td><td>" + (traMotion * 100).toFixed(0) +"%</td><td>"+ (traColor*100).toFixed(0) + "%</td><td>"+ (traAudio*100).toFixed(0) + "%</td><td>"+ (traPerc*100).toFixed(0) + "%</td></tr>"
+        // tableContent += "<tr><td>Starcraft</td><td>" + (starMotion * 100).toFixed(0) +"%</td><td>"+ (starColor*100).toFixed(0) + "%</td><td>"+ (starAudio*100).toFixed(0)  + "%</td><td>"+ (starPerc*100).toFixed(0) + "%</td></tr>"
+        // tableContent += "<tr><td>MusicVideo</td><td>" + (musMotion * 100).toFixed(0) +"%</td><td>"+ (musColor*100).toFixed(0) + "%</td><td>"+ (musAudio*100).toFixed(0) + "%</td><td>"+ (musPerc*100).toFixed(0) + "%</td></tr>"
+        // tableContent += "<tr><td>Movie</td><td>" + (movMotion * 100).toFixed(0) +"%</td><td>"+ (movColor*100).toFixed(0) + "%</td><td>"+ (movAudio*100).toFixed(0) + "%</td><td>"+ (movPerc*100).toFixed(0) + "%</td></tr>"
+        // tableContent += "<tr><td>interview</td><td>" + (intMotion * 100).toFixed(0) +"%</td><td>"+ (intColor*100).toFixed(0) + "%</td><td>"+ (intAudio*100).toFixed(0)  + "%</td><td>"+ (intPerc*100).toFixed(0) + "%</td></tr>"
+        // tableContent += "<tr><td>Flowers</td><td>" + (floMotion * 100).toFixed(0) +"%</td><td>"+ (floColor*100).toFixed(0) + "%</td><td>"+ (floAudio*100).toFixed(0)  + "%</td><td>"+ (floPerc*100).toFixed(0) + "%</td></tr>"
+        // tableContent += "<tr><td>Sports</td><td>" + (spoMotion * 100).toFixed(0) +"%</td><td>"+ (spoColor*100).toFixed(0) + "%</td><td>"+ (spoAudio*100).toFixed(0) + "%</td><td>"+ (spoPerc*100).toFixed(0) + "%</td></tr></tbody>"
+        $("#myTable").dataTable( {
+          "columns": [
+            { "title": "Video Type"},
+            { "title": "Motion Change(" + (motionPerc * 100).toFixed(0) + "%)"},
+            { "title": "Color Change(" + (colorPerc * 100).toFixed(0) + "%)"},
+            { "title": "Sound Change(" + (audioPerc * 100).toFixed(0) + "%)"},
+            { "title": "Total Percentage"}
+          ],
+          "data": [
+            ["Traffic", (traMotion * 100).toFixed(0) + "%", (traColor * 100).toFixed(0) + "%", (traAudio * 100).toFixed(0) + "%", (traPerc * 100).toFixed(0) + "%"],
+            ["Starcraft", (starMotion * 100).toFixed(0) + "%", (starColor * 100).toFixed(0) + "%", (starAudio * 100).toFixed(0) + "%", (starPerc * 100).toFixed(0) + "%"],
+            ["MusicVideo", (musMotion * 100).toFixed(0) +"%", (musColor * 100).toFixed(0) + "%", (musAudio * 100).toFixed(0) + "%", (musPerc * 100).toFixed(0) + "%"],
+            ["Interview", (intMotion * 100).toFixed(0) +"%", (intColor * 100).toFixed(0) + "%", (intAudio * 100).toFixed(0) + "%", (intPerc * 100).toFixed(0) + "%"],
+            ["Movie", (movMotion * 100).toFixed(0) +"%", (movColor * 100).toFixed(0) + "%", (movAudio * 100).toFixed(0) + "%", (movPerc * 100).toFixed(0) + "%"],
+            ["Flowers", (floMotion * 100).toFixed(0) +"%", (floColor * 100).toFixed(0) + "%", (floAudio * 100).toFixed(0) + "%", (floPerc * 100).toFixed(0) + "%"],
+            ["Sports", (spoMotion * 100).toFixed(0) +"%", (spoColor * 100).toFixed(0) + "%", (spoAudio * 100).toFixed(0) + "%", (spoPerc * 100).toFixed(0) + "%"]
+          ]
+        } );
+        // $('table').html(tableContent);
         $("#selectResult").html(selectString);
         $("#content").show()
     });
@@ -279,7 +297,15 @@ function drawGraph(data, array){
 
             series: [{
                 type: 'area',
-                data: data
+                data: data,
+                point: {
+                  events: {
+                      click: function () {
+                        var video = document.getElementById("myVideo");
+                        video.currentTime = this.x / 30;
+                      }
+                }
+                }
             }]
         });
     chart.series[0].setData(data,true);

@@ -11,6 +11,11 @@
         <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.0/css/bootstrap-toggle.min.css" rel="stylesheet">
         <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.0/js/bootstrap-toggle.min.js"></script>
         <script src="event.js"></script>
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css">
+        <script src="https://code.jquery.com/jquery-1.12.4.js" crossorigin="anonymous"></script>
+        <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js" crossorigin="anonymous"></script>
+        <script src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap.min.js" crossorigin="anonymous"></script>
         <style>
             #searchBox {
                 margin-top:5%;
@@ -80,10 +85,10 @@
             }
         </style>
     </head>
-    
+
     <body background="background.jpg">
         <div id = "mainBox">
-            
+
             <!–– top search box ––>
             <div id = "searchBox" class="container well" style ="background-color:white">
                 <div id = "title" style ="text-align : center"> Video Search</div>
@@ -102,7 +107,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <!–– video player div ––>
             <div id= "content" style="display:none">
                 <div id = "leftSection" style ="width:46%">
@@ -137,32 +142,33 @@
                     </div>
                     <div id="botSection" class = "well contianer" style ="background-color:white;text-align:center">
                         <span style = "font-size: 20px;">Database Matched Video</span>
-                        <video width="500" controls>
+                        <video id="myVideo" width="500" controls>
                             <source src="traffic.mp4" type="video/mp4">
                         </video>
                     </div>
                 </div>
             </div>
-            
+
             <!–– statistic div show motion,color,sound match ––>
-            <div id= "statsTable" class = "well contianer" style="display:none">
+            <div id= "statsTable" class = "well contianer dataTables_wrapper" style="display:none">
                  <button class="btn btn-primary btn-xs" id="gobackbut"><i class="glyphicon glyphicon-menu-left" aria-hidden="true"></i></button>
                 <h2>Matched Video Statistic</h2>
-                <table id="myTable">
-                    <tr>
+                <table id="myTable" class = "table table-striped table-borderede" width="100%">
+                  <!-- <thead>
+                      <tr>
                         <th>Video Type</th>
                         <th>Motion Change(40%)</th>
                         <th>Color Change(25%)</th>
                         <th>Sound Change(25%)</th>
-                        <th>Object Detection(10%)</th>
                         <th>Total Percentage</th>
                     </tr>
-                    <tr>
+                  </thead>
+                   <tbody> -->
+                    <!-- <tr>
                         <td>Traffic</td>
                         <td>98%</td>
                         <td>28%</td>
                         <td>99%</td>
-                        <td>44%</td>
                         <td>78%</td>
                     </tr>
                     <tr>
@@ -170,7 +176,6 @@
                         <td>44%</td>
                         <td>78%</td>
                         <td>76%</td>
-                        <td>38%</td>
                         <td>28%</td>
                     </tr>
                     <tr>
@@ -178,7 +183,6 @@
                         <td>56%</td>
                         <td>28%</td>
                         <td>28%</td>
-                        <td>98%</td>
                         <td>44%</td>
                     </tr>
                     <tr>
@@ -212,7 +216,8 @@
                         <td>28%</td>
                         <td>98%</td>
                         <td>87%</td>
-                    </tr>
+                    </tr> -->
+                  <!-- </tbody> -->
                 </table>
             </div>
         </div>
