@@ -16,7 +16,7 @@ $(document).ready(function(){
     var musAudio;
     var musArray;
     var movPerc;
-    var movMotion; 
+    var movMotion;
     var movColor;
     var movAudio;
     var movArray;
@@ -52,8 +52,8 @@ $(document).ready(function(){
             count++;
         }
     }
-    
-    $("#searchbutton").click(function(){                             
+
+    $("#searchbutton").click(function(){
         // sort match rate, and put top match in datbase video section
         var input = $("#searchInput").val();
         xmlhttp=new XMLHttpRequest()
@@ -62,22 +62,22 @@ $(document).ready(function(){
         xmlDoc=xmlhttp.responseText;
         obj=JSON.parse(xmlDoc);
         // read traffic video data from JSON
-        motionPerc = obj.data.motion
-        colorPerc = obj.data.color
-        audioPerc = obj.data.audio
+        motionPerc = obj.data.motion_coefficient
+        colorPerc = obj.data.color_coefficient
+        audioPerc = obj.data.audio_coefficient
         traPerc = obj.data.traffic.matchPerc
         traMotion = obj.data.traffic.motion
         traColor = obj.data.traffic.color
         traAudio = obj.data.traffic.audio
         traArray = obj.data.traffic.array
-                             
+
         // read starcraft data
         starPerc = obj.data.starcraft.matchPerc
         starMotion = obj.data.starcraft.motion
         starColor = obj.data.starcraft.color
         starAudio = obj.data.starcraft.audio
         starArray = obj.data.starcraft.array
-                             
+
 
         // read musicvideo data
         musPerc = obj.data.musicvideo.matchPerc
@@ -85,8 +85,8 @@ $(document).ready(function(){
         musColor = obj.data.musicvideo.color
         musAudio = obj.data.musicvideo.audio
         musArray = obj.data.musicvideo.array
-                             
-                             
+
+
         // read movie data
         movPerc = obj.data.movie.matchPerc
         movMotion = obj.data.movie.motion
@@ -94,69 +94,70 @@ $(document).ready(function(){
         movAudio = obj.data.movie.audio
         movArray = obj.data.movie.array
 
-                             
+
         // read interview data
         intPerc = obj.data.interview.matchPerc
         intMotion = obj.data.interview.motion
         intColor = obj.data.interview.color
         intAudio = obj.data.interview.audio
         intArray = obj.data.interview.array
-                             
+
         // read flowers data
         floPerc = obj.data.flowers.matchPerc
         floMotion = obj.data.flowers.motion
         floColor = obj.data.flowers.color
         floAudio = obj.data.flowers.audio
         floArray = obj.data.flowers.array
-                             
+
         // read sports data
         spoPerc = obj.data.sports.matchPerc
         spoMotion = obj.data.sports.motion
         spoColor = obj.data.sports.color
         spoAudio = obj.data.sports.audio
         spoArray = obj.data.sports.array
-        
-        var finalArray = [spoPerc,floPerc,intPerc,movPerc,musPerc,starPerc,traPerc]
-        finalArray.sort().reverse()
+
+        var finalArray = {'sports': spoPerc, 'flowers': floPerc, 'interview': intPerc, 'movie': movPerc, 'music': musPerc, 'starcraft': starPerc, 'traffic': traPerc}
+        finalArray = Object.keys(finalArray).sort(function(a,b){return finalArray[a]-finalArray[b]}).reverse()
+        // finalArray.sort().reverse()
         var selectString = ""
         var videoString = ""
         for (var i = 0; i < finalArray.length; i++) {
-            if(finalArray[i] == traPerc) {
+            if(finalArray[i] === 'traffic') {
                 selectString += "<option value=\"tra\">traffic(" + (traPerc * 100).toFixed(0)+"%)</option>"
                 if(i == 0){
                     $('#botSection video source').attr('src', "traffic.mp4");
                     $("#botSection video")[0].load();
                     drawGraph(traArray,timeArray);
                 }
-            } else if(finalArray[i] == starPerc) {
+            } else if(finalArray[i] === 'starcraft') {
                 selectString += "<option value=\"star\">starcraft(" + (starPerc * 100).toFixed(0)+"%)</option>"
                 if(i == 0){
                     $('#botSection video source').attr('src', "starcraft.mp4");
                     $("#botSection video")[0].load();
                     drawGraph(starArray,timeArray);
                 }
-            } else if(finalArray[i] == musPerc) {
+            } else if(finalArray[i] === 'music') {
                 selectString += "<option value=\"mus\">musicvideo(" + (musPerc * 100).toFixed(0)+"%)</option>"
                 if(i == 0){
                     $('#botSection video source').attr('src', "musicvideo.mp4");
                     $("#botSection video")[0].load();
                     drawGraph(musArray,timeArray);
                 }
-            } else if(finalArray[i] == movPerc) {
-                selectString += "<option value=\"mov\">movie(" + (movPerc * 100).toFixed(0) * 100+"%)</option>" 
+            } else if(finalArray[i] === 'movie') {
+                selectString += "<option value=\"mov\">movie(" + (movPerc * 100).toFixed(0)+"%)</option>" 
                 if(i == 0){
                     $('#botSection video source').attr('src', "movie.mp4");
                     $("#botSection video")[0].load();
                     drawGraph(movArray,timeArray);
                 }
-            } else if(finalArray[i] == intPerc) {
+            } else if(finalArray[i] === 'interview') {
                 selectString += "<option value=\"int\">interview(" + (intPerc * 100).toFixed(0)+ "%)</option>"
                 if(i == 0){
                     $('#botSection video source').attr('src', "interview.mp4");
                     $("#botSection video")[0].load();
                     drawGraph(intArray,timeArray);
                 }
-            } else if(finalArray[i] == floPerc) {
+            } else if(finalArray[i] === 'flowers') {
                  selectString += "<option value=\"flo\">flowers(" + (floPerc * 100).toFixed(0)+"%)</option>"
                  if(i == 0){
                     $('#botSection video source').attr('src', "flowers.mp4");
@@ -192,7 +193,7 @@ $(document).ready(function(){
         $("#statsTable").show()
         $("#content").hide()
     });
-    
+
     // select change controller, need to change the graph as well.graph has not draw yet.
     $('select').on('change', function() {
         if(this.value == "flo"){
