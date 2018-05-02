@@ -115,7 +115,7 @@ def read_img_color_and_motion(folder_path, folder_name, way):
 
 def generate_video(wave_path, video_name):
     os.system('ffmpeg -framerate 30 -i pic/img%03d.png -i ' +
-              wave_path + ' ' + video_name + '.mp4')
+              wave_path + ' -vcodec libx264 Front-End/' + video_name + '.mp4')
 
 
 def compare_color(query_list):
@@ -287,7 +287,7 @@ def test_get_result(index):
 
 def data_to_json(data, fileName):
     # Write JSON file
-    with open('data/' + fileName + '.json', 'w', encoding='utf8') as outfile:
+    with open('Front-End/' + fileName + '.json', 'w', encoding='utf8') as outfile:
         # with open('data/result.json', 'w', encoding='utf8') as outfile:
         str_ = json.dumps(data,
                           indent=4, sort_keys=True,
@@ -306,17 +306,16 @@ def main():
     start = time.time()
     data_list, query_array = read_img_color_and_motion(
         test_query_file_path, test_query_file_name, 2)
-    print("It costs", time.time() - start,
-          "seconds to pre process color and motion")
+    # print("It costs", time.time() - start, "seconds to pre process color and motion")
     t = time.time()
     motion = compare_motion(query_array)
-    print("It costs", time.time() - t, "seconds to analyze motion")
+    # print("It costs", time.time() - t, "seconds to analyze motion")
     t = time.time()
     color = compare_color(data_list)
-    print("It costs", time.time() - t, "seconds to analyze color")
+    # print("It costs", time.time() - t, "seconds to analyze color")
     t = time.time()
     audio = compare_audio(test_query_file_path, test_query_file_name)
-    print("It costs", time.time() - t, "seconds to analyze audio")
+    # print("It costs", time.time() - t, "seconds to analyze audio")
     result = dict()
     data = dict()
     max_motion_best = 0
