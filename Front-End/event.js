@@ -316,4 +316,5 @@ function drawGraph(data, array){
             }]
         });
     chart.series[0].setData(data,true);
+    chart.series[0].name = "Score";
 }
