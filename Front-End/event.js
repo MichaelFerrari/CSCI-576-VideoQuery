@@ -53,6 +53,7 @@ $(document).ready(function(){
         }
     }
     $("#searchbutton").click(function(){
+        $("#statsTable").hide()
         // sort match rate, and put top match in datbase video section
         var input = $("#searchInput").val();
         xmlhttp=new XMLHttpRequest()
@@ -308,7 +309,7 @@ function drawGraph(data, array){
                   events: {
                       click: function () {
                         var video = document.getElementById("myVideo");
-                        video.currentTime = this.x / 30;
+                        video.currentTime = (this.x + 1) / 30;
                       }
                 }
                 }
