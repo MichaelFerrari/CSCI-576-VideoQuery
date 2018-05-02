@@ -34,7 +34,8 @@ def read_img_color(file):
 
     for y in range(height):
         for x in range(width):
-            (r, g, b) = (array[ind], array[ind + height * width], array[ind + height * width * 2])
+            (r, g, b) = (array[ind], array[ind + height *
+                                           width], array[ind + height * width * 2])
             ind += 1
             comb[int(r / 64), int(g / 64), int(b / 64)] += 1
             img.putpixel((x, y), (r, g, b))
@@ -51,7 +52,8 @@ def read_img_motion(folder_path, folder_name):
     img = np.asarray(img)
     old_image = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     for index in range(2, 151):
-        new_path = folder_path + '/' + folder_name + '/' + folder_name + '{0:03}'.format(index) + '.rgb'
+        new_path = folder_path + '/' + folder_name + '/' + \
+            folder_name + '{0:03}'.format(index) + '.rgb'
         img, _ = read_img_color(new_path)
         img = np.asarray(img)
         new_image = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -82,14 +84,16 @@ def read_img_color_and_motion(folder_path, folder_name, way):
     query_array = np.zeros(loop_time - 2)
 
     # handle first img
-    img, comb = read_img_color(folder_path + "/" + folder_name + "/" + folder_name + "_001.rgb")
+    img, comb = read_img_color(
+        folder_path + "/" + folder_name + "/" + folder_name + "_001.rgb")
     data_list.append(comb)
     img = np.asarray(img)
     old_image = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
     # handle rest
     for index in range(2, loop_time):
-        filename = folder_path + "/" + folder_name + "/" + folder_name + '_' + '{0:03}'.format(index) + ".rgb"
+        filename = folder_path + "/" + folder_name + "/" + \
+            folder_name + '_' + '{0:03}'.format(index) + ".rgb"
         img, comb = read_img_color(filename)
         data_list.append(comb)
         img = np.asarray(img)
@@ -110,11 +114,13 @@ def read_img_color_and_motion(folder_path, folder_name, way):
 #     os.system('ffmpeg -framerate 30 -i pic/img%03d.png -i ' + file_path + 'query.mp4')
 
 def generate_video(wave_path, video_name):
-    os.system('ffmpeg -framerate 30 -i pic/img%03d.png -i ' + wave_path + ' ' + video_name + '.mp4')
+    os.system('ffmpeg -framerate 30 -i pic/img%03d.png -i ' +
+              wave_path + ' ' + video_name + '.mp4')
 
 
 def compare_color(query_list):
-    databases = ["flowers", "interview", "movie", "musicvideo", "sports", "starcraft", "traffic"]
+    databases = ["flowers", "interview", "movie",
+                 "musicvideo", "sports", "starcraft", "traffic"]
     color_result = {}
     for db in databases:
         db_npy = np.load('data/%s.npy' % db)
@@ -130,7 +136,8 @@ def compare_color(query_list):
 
 
 def compare_motion(query_array):
-    database = ["flowers", "interview", "movie", "musicvideo", "sports", "starcraft", "traffic"]
+    database = ["flowers", "interview", "movie",
+                "musicvideo", "sports", "starcraft", "traffic"]
     db_array = np.zeros((7, 599))
     frame_array = np.zeros((7, 451))
     motion_result = {}
@@ -145,7 +152,8 @@ def compare_motion(query_array):
             # frame_array[i][j] = np.sum(np.absolute(np.subtract(db_array[i][j:j + 149], query_array)))
             frame_array[i][j] = diff_to_coefficient(
                 np.sum(np.absolute(np.subtract(db_array[i][j:j + 149], query_array))))
-        motion_result[database[i]] = (np.amax(frame_array[i]), frame_array[i].tolist())
+        motion_result[database[i]] = (
+            np.amax(frame_array[i]), frame_array[i].tolist())
         # motion_result[database[i]] = (frame_array[i], np.amax(frame_array[i]))
     # print(motion_result)
     return motion_result
@@ -159,7 +167,8 @@ def diff_to_coefficient(sample):
 
 def compare_audio(folder_path, folder_name):
     wave_path = folder_path + '/' + folder_name + '/' + folder_name + '.wav'
-    database = ['musicvideo', 'traffic', 'flowers', 'interview', 'movie', 'sports', 'starcraft']
+    database = ['musicvideo', 'traffic', 'flowers',
+                'interview', 'movie', 'sports', 'starcraft']
 
     sample_rate, samples = wavfile.read(wave_path)
     mono_samples = stereo_to_mono(samples)
@@ -179,11 +188,13 @@ def compare_audio(folder_path, folder_name):
         for count in range(151):
             start = int(count * length / 50)
             test_samples = mono_samples2[start: start + length]
-            test_spectogram = signal.spectrogram(test_samples, fs=sample_rate)[2]
+            test_spectogram = signal.spectrogram(
+                test_samples, fs=sample_rate)[2]
             difference = 0.0
             if len(test_samples) < length:
                 new_mono_samples = mono_samples[0: len(test_samples)]
-                new_spectogram = signal.spectrogram(new_mono_samples, fs=sample_rate)[2]
+                new_spectogram = signal.spectrogram(
+                    new_mono_samples, fs=sample_rate)[2]
                 difference = find_difference(new_spectogram, test_spectogram)
             else:
                 difference = find_difference(spectogram, test_spectogram)
@@ -216,13 +227,15 @@ def find_difference(spectogram_origin, spectogram_new):
 
 # Read all audio files and save mono samples into a .npy file
 def pre_process():
-    videos = ['musicvideo', 'traffic', 'flowers', 'interview', 'movie', 'sports', 'starcraft']
+    videos = ['musicvideo', 'traffic', 'flowers',
+              'interview', 'movie', 'sports', 'starcraft']
     paths = []
     for _ in videos:
-        paths.append('/Users/skywish/Downloads/Class/576/databse_videos/%s/%s.wav' % (_, _))
+        paths.append(
+            '/Users/skywish/Downloads/Class/576/databse_videos/%s/%s.wav' % (_, _))
     audio_data = {}
     for _ in range(len(videos)):
-        pass_sample_rate, samples = wavfile.read(paths[_])
+        _, samples = wavfile.read(paths[_])
         mono_samples = stereo_to_mono(samples)
         audio_data[videos[_]] = mono_samples
     np.save('audioData.npy', audio_data)
@@ -253,7 +266,8 @@ def calculate_similarity(way, comb1, comb2):
 def test_read_query_data(folder_path, folder_name):
     query_data_list = []
     for _ in range(1, 3):
-        filename = folder_path + "/" + folder_name + "/" + folder_name + '{0:03}'.format(_) + ".rgb"
+        filename = folder_path + "/" + folder_name + \
+            "/" + folder_name + '{0:03}'.format(_) + ".rgb"
         query_data_list.append(read_img_color(filename))
     print(query_data_list[0])
 
@@ -274,77 +288,11 @@ def test_get_result(index):
 def data_to_json(data, fileName):
     # Write JSON file
     with open('data/' + fileName + '.json', 'w', encoding='utf8') as outfile:
-    # with open('data/result.json', 'w', encoding='utf8') as outfile:
+        # with open('data/result.json', 'w', encoding='utf8') as outfile:
         str_ = json.dumps(data,
                           indent=4, sort_keys=True,
                           separators=(',', ': '), ensure_ascii=False)
         outfile.write(str_)
-
-
-def test():
-    test_db_file_path = "/Users/skywish/Downloads/Class/576/databse_videos"
-    test_db_file_name = "traffic"
-    test_query_file_path = "/Users/skywish/Downloads/Class/576/query"
-    test_query_file_name = "second"
-    npy_file_name = "traffic.npy"
-    wave_path = '/Users/skywish/Downloads/Class/576/query/first/first.wav'
-    query = ["first", "second"]
-    n1 = np.load('data/flowers.npy')
-    n2 = np.load('data/first.npy')
-    result = dict()
-    data = dict()
-    # get motion
-    t = time.time()
-    with open("data/queryfirst.txt", "r") as f:
-        array = f.read().split(",")
-        results = list(map(float, array))
-        query = np.asarray(results)
-    motion = compare_motion(query)
-    # get color
-    color = compare_color(n2)
-    # get audio
-    audio = compare_audio(wave_path)
-    print("It costs %f seconds to process." % (time.time() - t))
-    motion_coefficients = 0.55
-    color_coefficients = 0.35
-    audio_coefficients = 0.1
-    database = ['musicvideo', 'traffic', 'flowers', 'interview', 'movie', 'sports', 'starcraft']
-    t = time.time()
-    for db in database:
-        (motion_best, motion_array) = motion[db]
-        (color_best, color_array) = color[db]
-        (audio_best, audio_array) = audio[db]
-        item = dict()
-        array = []
-        item['motion'] = round(motion_best, 2)
-        item['color'] = round(color_best, 2)
-        item['audio'] = round(audio_best, 2)
-        for i in range(451):
-            frame_value = motion_coefficients * motion_array[i] + color_coefficients * color_array[i] + \
-                          audio_coefficients * audio_array[int(i / 3)]
-            array.append(round(frame_value, 2))
-        item['array'] = array
-        item['matchPerc'] = max(array)
-        data[db] = item
-    result['data'] = data
-    data_to_json(result)
-    print("It costs %f seconds to process." % (time.time() - t))
-
-
-def test1():
-    test_query_file_path = "/Users/skywish/Downloads/Class/576/query"
-    test_query_file_name = "second"
-    # start = time.time()
-    # data_list, query_array = read_img_color_and_motion(test_query_file_path, test_query_file_name, 2)
-    # print("It costs", time.time() - start, "seconds to pre process color and motion")
-    t = time.time()
-    # compare_color(np.load('data/second.npy'))
-    with open("data/querysecond.txt", "r") as f:
-        array = f.read().split(",")
-        results = list(map(float, array))
-        query = np.asarray(results)
-    compare_motion(query)
-    print("It costs", time.time() - t, "seconds to analyze motion")
 
 
 def main():
@@ -356,8 +304,10 @@ def main():
     test_query_file_path = sys.argv[1]
     test_query_file_name = sys.argv[2]
     start = time.time()
-    data_list, query_array = read_img_color_and_motion(test_query_file_path, test_query_file_name, 2)
-    print("It costs", time.time() - start, "seconds to pre process color and motion")
+    data_list, query_array = read_img_color_and_motion(
+        test_query_file_path, test_query_file_name, 2)
+    print("It costs", time.time() - start,
+          "seconds to pre process color and motion")
     t = time.time()
     motion = compare_motion(query_array)
     print("It costs", time.time() - t, "seconds to analyze motion")
@@ -373,7 +323,8 @@ def main():
     motion_coefficients = 0.55
     color_coefficients = 0.35
     audio_coefficients = 0.1
-    database = ['musicvideo', 'traffic', 'flowers', 'interview', 'movie', 'sports', 'starcraft']
+    database = ['musicvideo', 'traffic', 'flowers',
+                'interview', 'movie', 'sports', 'starcraft']
     for db in database:
         (motion_best, _) = motion[db]
         if max_motion_best < motion_best:
@@ -400,7 +351,7 @@ def main():
         item['audio'] = round(audio_best, 2)
         for i in range(451):
             frame_value = motion_coefficients * motion_array[i] + color_coefficients * color_array[i] + \
-                          audio_coefficients * audio_array[int(i / 3)]
+                audio_coefficients * audio_array[int(i / 3)]
             array.append(round(frame_value, 2))
         for i in range(450, 601):
             array.append(0)
@@ -409,8 +360,10 @@ def main():
         data[db] = item
     result['data'] = data
     data_to_json(result, test_query_file_name)
-    generate_video('%s/%s/%s.wav' % (test_query_file_path, test_query_file_name, test_query_file_name), test_query_file_name)
-    print("It costs %f seconds to search videos totally." % (time.time() - start))
+    generate_video('%s/%s/%s.wav' % (test_query_file_path,
+                                     test_query_file_name, test_query_file_name), test_query_file_name)
+    print("It costs %f seconds to search videos totally." %
+          (time.time() - start))
 
 
 if __name__ == "__main__":
